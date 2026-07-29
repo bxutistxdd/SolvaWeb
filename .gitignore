@@ -1,0 +1,22 @@
+desktop.ini
+*.log
+.DS_Store
+Thumbs.db
+js/config.local.js
+node_modules/
+.env
+.env.local
+_*.js
+
+# Build de Vite
+dist/
+
+# succ — base de datos local de memoria semantica
+.succ/
+
+# Scripts de despliegue con credenciales (Supabase / Railway) — NO subir
+apply-chat-sql.js
+apply-chat-upgrades.js
+build-n8n-chat.js
+deploy-n8n-chat.js
+upgrade-flow.js

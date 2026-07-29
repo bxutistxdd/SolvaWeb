@@ -1,0 +1,30 @@
+{
+  "name": "solva-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Solva — plantilla base de tienda web con catálogo y venta por WhatsApp. Tienda web + panel admin.",
+  "author": "Juan Sebastian Galindo Bautista (bxutistxdd)",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "format": "prettier --write \"src/**/*.{js,jsx,css}\""
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "prettier": "^3.9.4",
+    "vite": "^8.1.3"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.1",
+    "motion": "^12.42.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
