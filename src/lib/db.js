@@ -180,9 +180,7 @@ export const db = (function () {
   function getCategoryPrefix(catId) {
     const c = (_categories || []).find((x) => x.id === catId && x.level === 1);
     if (c && c.prefix) return c.prefix;
-    const seed = { anillos: "an", collares: "co", aretes: "ar", pulseras: "pu", piercings: "pi" }[
-      catId
-    ];
+    const seed = { camisetas: "ca", zapatilla: "za" }[catId];
     if (seed) return seed;
     return (
       (catId || "prod")

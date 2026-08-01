@@ -21,7 +21,7 @@ export function PDP({ id, onNavigate, onAdd }) {
   const allProducts = db.getProducts();
   const found = allProducts.find((p) => p.id === id);
   const product = found || allProducts[0];
-  const shape = VETA_DATA.shapes[product.cat]?.kind || "ring";
+  const shape = VETA_DATA.shapes[product.cat]?.kind || "generic";
 
   // Variantes de color (si el producto las tiene): cada una trae su propia
   // galería de fotos. colorIdx decide cuál se muestra.
@@ -43,7 +43,6 @@ export function PDP({ id, onNavigate, onAdd }) {
   const [size, setSize] = useState(
     () => product.sizes.find((sz) => db.getStock(product.id, sz) !== 0) || product.sizes[0]
   );
-  const [finish, setFinish] = useState(product.finish);
   const [qty, setQty] = useState(1);
 
   /* Stock de la talla seleccionada */
@@ -149,8 +148,8 @@ export function PDP({ id, onNavigate, onAdd }) {
                 product.ref && db.getCategoryLabel(product.ref),
               ]
                 .filter(Boolean)
-                .join(" › ")}{" "}
-              · {product.material}
+                .join(" › ")}
+              {product.material && ` · ${product.material}`}
             </div>
           </Reveal>
           <Reveal delay={100}>
@@ -197,27 +196,9 @@ export function PDP({ id, onNavigate, onAdd }) {
             </Reveal>
           )}
 
-          <Reveal delay={360}>
-            <div className="pdp-section">
-              <span className="pdp-section-label">Acabado</span>
-              <div className="variant-row">
-                {VETA_DATA.finishes.map((f) => (
-                  <button
-                    key={f}
-                    className="variant-chip"
-                    data-on={finish === f ? "1" : "0"}
-                    onClick={() => setFinish(f)}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-
           <Reveal delay={440}>
             <div className="pdp-section">
-              <span className="pdp-section-label">Talla / largo</span>
+              <span className="pdp-section-label">Talla</span>
               <div className="size-row">
                 {product.sizes.map((s) => {
                   const st = getStockStatus(product.id, s);
@@ -284,7 +265,6 @@ export function PDP({ id, onNavigate, onAdd }) {
                     !isOut &&
                     onAdd(product, {
                       size,
-                      finish,
                       qty,
                       color: colors.length ? colors[safeColorIdx].name : null,
                       colorImg: colors.length ? colors[safeColorIdx].images[0] : null,
@@ -302,8 +282,12 @@ export function PDP({ id, onNavigate, onAdd }) {
               <details className="detail-row" open>
                 <summary>Especificación</summary>
                 <p>
-                  Material: <b>{product.material}</b>. Acabado: <b>{finish}</b>. Sello "925" grabado
-                  al interior. Cada pieza incluye estuche de tela y certificado.
+                  {product.material && (
+                    <>
+                      Composición: <b>{product.material}</b>.{" "}
+                    </>
+                  )}
+                  Prenda revisada antes de despacho, tallas sujetas a disponibilidad de stock.
                 </p>
               </details>
               <details className="detail-row">
@@ -316,15 +300,15 @@ export function PDP({ id, onNavigate, onAdd }) {
               <details className="detail-row">
                 <summary>Garantía</summary>
                 <p>
-                  Garantía de por vida sobre la estructura. Limpieza profesional gratuita una vez al
-                  año en cualquier momento.
+                  Cambios y devoluciones dentro de los 5 días siguientes a la entrega, siempre que la
+                  prenda esté sin uso y con sus etiquetas originales.
                 </p>
               </details>
               <details className="detail-row">
                 <summary>Cuidado</summary>
                 <p>
-                  Guarda separado, evita perfumes y cremas en contacto directo. Pulir con paño
-                  suave.{" "}
+                  Lava en agua fría, evita la secadora y plancha a temperatura media del lado
+                  interior.{" "}
                   <a
                     href="#"
                     onClick={(e) => {

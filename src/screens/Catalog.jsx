@@ -17,7 +17,7 @@ export function Catalog({ filter, search, onNavigate }) {
   const all = useMemo(() => visibleProducts(), [db.getProducts()]);
   const [cat, setCat] = useState(filter || "all");
   const [subcat, setSubcat] = useState("all");
-  const [mat, setMat] = useState("all");
+  const [color, setColor] = useState("all");
   const [sort, setSort] = useState("default");
   const [q, setQ] = useState(search || "");
 
@@ -35,17 +35,26 @@ export function Catalog({ filter, search, onNavigate }) {
   const catList = db.getCategories(1) || VETA_DATA.categories;
   const subcatList = cat !== "all" ? db.getChildren(cat) : [];
 
+  // Colores disponibles entre los productos visibles (con variantes de
+  // color); si ningún producto tiene colores, este filtro no se muestra.
+  const colorList = useMemo(() => {
+    const names = new Set();
+    all.forEach((p) => VETA_DATA.productColors(p).forEach((c) => names.add(c.name)));
+    return Array.from(names).sort();
+  }, [all]);
+
   const filtered = useMemo(() => {
     let list = all;
     if (cat !== "all") list = list.filter((p) => p.cat === cat);
     if (subcat !== "all") list = list.filter((p) => p.subcat === subcat);
-    if (mat !== "all") list = list.filter((p) => p.material === mat);
+    if (color !== "all")
+      list = list.filter((p) => VETA_DATA.productColors(p).some((c) => c.name === color));
     if (q.trim()) return searchProducts(q, list);
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
     if (sort === "name") list = [...list].sort((a, b) => a.name.localeCompare(b.name));
     return list;
-  }, [all, cat, subcat, mat, q, sort]);
+  }, [all, cat, subcat, color, q, sort]);
 
   return (
     <main className="page-enter">
@@ -139,26 +148,28 @@ export function Catalog({ filter, search, onNavigate }) {
               ))}
             </div>
           )}
-          <div className="filter-group">
-            <span className="filter-group-label">Material</span>
-            <button
-              className="chip"
-              data-on={mat === "all" ? "1" : "0"}
-              onClick={() => setMat("all")}
-            >
-              Todos
-            </button>
-            {VETA_DATA.materials.map((m) => (
+          {colorList.length > 0 && (
+            <div className="filter-group">
+              <span className="filter-group-label">Color</span>
               <button
-                key={m}
                 className="chip"
-                data-on={mat === m ? "1" : "0"}
-                onClick={() => setMat(m)}
+                data-on={color === "all" ? "1" : "0"}
+                onClick={() => setColor("all")}
               >
-                {m}
+                Todos
               </button>
-            ))}
-          </div>
+              {colorList.map((c) => (
+                <button
+                  key={c}
+                  className="chip"
+                  data-on={color === c ? "1" : "0"}
+                  onClick={() => setColor(c)}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="filter-group" style={{ marginLeft: "auto" }}>
             <span className="filter-group-label">Orden</span>
             <select className="sort-select" value={sort} onChange={(e) => setSort(e.target.value)}>

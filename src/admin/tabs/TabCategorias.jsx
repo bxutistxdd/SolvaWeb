@@ -38,10 +38,10 @@ function CatEditor({ editing, onSave, onCancel }) {
               onChange={(e) => setLabel(e.target.value)}
               placeholder={
                 editing.level === 3
-                  ? "Ej: Herradura con esmeralda"
+                  ? "Ej: Talla 40"
                   : editing.level === 2
-                    ? "Ej: Trenzado"
-                    : "Ej: Anillos Plata"
+                    ? "Ej: Nike"
+                    : "Ej: Camisetas"
               }
             />
           </div>

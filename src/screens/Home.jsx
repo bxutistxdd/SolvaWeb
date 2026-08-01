@@ -22,10 +22,10 @@ export function Home({ onNavigate }) {
       <Marquee
         compact
         items={[
-          "Plata ley 925",
-          "Oro laminado 18k",
+          "Algodón pesado",
+          "Estampados propios",
           "Piezas seleccionadas con criterio",
-          "Garantía de por vida",
+          "Cambios y devoluciones",
           "Envíos a todo el país",
           "Atención por WhatsApp",
         ]}
@@ -90,24 +90,24 @@ function HomeHero() {
           </span>
           <div className="hero-meta reveal" data-in="1">
             <div>
-              <b>Plata ley 925</b>
+              <b>Algodón pesado</b>
             </div>
-            <div>Oro laminado 18k</div>
+            <div>Estampados propios</div>
             <div>Curado en Colombia</div>
           </div>
         </div>
         <h1 className="h-display">
-          <SplitText text="Joyería" />
+          <SplitText text="Ropa" />
           <br />
           <em>
-            <SplitText text="que perdura" charDelay={350} />
+            <SplitText text="con actitud" charDelay={350} />
           </em>
         </h1>
         <div className="hero-bottom">
           <Reveal delay={900}>
             <p className="hero-cta-line">
-              Oro laminado 18k <span className="hero-cta-dot">—</span> Selección curada{" "}
-              <span className="hero-cta-dot">—</span> Garantía de por vida
+              Algodón pesado <span className="hero-cta-dot">—</span> Selección curada{" "}
+              <span className="hero-cta-dot">—</span> Cambios sin drama
             </p>
           </Reveal>
           <Reveal delay={1100}>
@@ -130,26 +130,26 @@ function HomeHero() {
 function HomeCarousel() {
   const slides = [
     {
-      eyebrow: "01 · Material",
-      title: "Plata ley 925.\nNada más, nada menos.",
-      body: "92.5% de plata pura. Sin aleaciones que oxiden la piel ni sustituciones invisibles. Cada pieza viene con su sello grabado al interior.",
-      shape: "ring",
-      tag: `${BRAND.name} · 925`,
-      label: "sello 925 verificado",
+      eyebrow: "01 · Tela",
+      title: "Algodón pesado.\nNada más, nada menos.",
+      body: "Tela gruesa que no se transparenta ni se deforma al lavar. Cada prenda pasa por control de calidad antes de salir.",
+      shape: "generic",
+      tag: `${BRAND.name} · tela`,
+      label: "algodón revisado",
     },
     {
       eyebrow: "02 · Selección",
       title: "Elegimos antes\nde poner en venta.",
-      body: "Cada pieza pasa por nuestras manos antes de llegar a las tuyas: revisamos peso, acabado y sello 925 una por una. Hoy curamos con proveedores de confianza en Bogotá — ya preparamos nuestra propia producción.",
-      shape: "necklace",
+      body: "Cada prenda pasa por nuestras manos antes de llegar a las tuyas: revisamos costuras, estampado y talla una por una.",
+      shape: "generic",
       tag: `${BRAND.name} · curaduría`,
       label: "pieza revisada",
     },
     {
       eyebrow: "03 · Acompañamiento",
       title: "Una compra,\nuna comunidad.",
-      body: "Cuidamos a quien nos elige: garantía de por vida sobre estructura, limpieza anual gratuita y acceso a piezas exclusivas para clientela frecuente.",
-      shape: "bracelet",
+      body: "Cuidamos a quien nos elige: cambios y devoluciones sin vueltas, y acceso a piezas exclusivas para clientela frecuente.",
+      shape: "generic",
       tag: `${BRAND.name} · comunidad`,
       label: "clientela fiel",
     },
@@ -267,7 +267,7 @@ function CatSlot({ cat, index, onNavigate }) {
   const products = visibleProducts()
     .filter((p) => p.cat === cat.id)
     .slice(0, 4);
-  const shape = VETA_DATA.shapes[cat.id]?.kind || "ring";
+  const shape = VETA_DATA.shapes[cat.id]?.kind || "generic";
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
@@ -332,9 +332,9 @@ function HomeCategories({ onNavigate }) {
         <div>
           <span className="eyebrow">— Categorías</span>
           <h2 className="h-1">
-            Cinco familias.
+            Cada familia.
             <br />
-            <em>Una sola lengua.</em>
+            <em>Un mismo estilo.</em>
           </h2>
         </div>
         <Reveal>
@@ -383,24 +383,24 @@ function HomeManifesto() {
         <Reveal>
           <span className="eyebrow">— Manifiesto</span>
           <h2 className="h-1" style={{ marginTop: 12 }}>
-            La joya
+            La prenda
             <br />
-            como <em>memoria.</em>
+            como <em>actitud.</em>
           </h2>
         </Reveal>
       </div>
       <div>
         <Reveal delay={200}>
           <p className="body-lg" style={{ marginBottom: 24 }}>
-            Pensamos cada pieza para que dure más que la temporada en que se compró: discreta,
-            clara, hecha para acompañar mucho después de la primera vez que se lleva puesta.
+            Pensamos cada prenda para que dure más que la temporada en que se compró: cómoda,
+            clara, hecha para acompañar mucho después de la primera vez que se usa.
           </p>
         </Reveal>
         <Reveal delay={400}>
           <p className="body" style={{ marginBottom: 32 }}>
             No vendemos por temporada. Cada referencia se queda en catálogo hasta que deja de
-            tener sentido. Revisamos cierres, pulimos cantos, hablamos con quien nos compra.
-            Elegimos pocas, atendemos a todas.
+            tener sentido. Revisamos costuras, cuidamos el estampado, hablamos con quien nos
+            compra. Elegimos pocas, atendemos a todas.
           </p>
         </Reveal>
       </div>
@@ -410,10 +410,10 @@ function HomeManifesto() {
 
 function HomeNumbers() {
   const cells = [
-    { num: "925", label: "Pureza de plata" },
-    { num: "18k", label: "Oro laminado" },
-    { num: <>∞</>, label: "Garantía estructura" },
-    { num: "100%", label: "Autenticidad verificada" },
+    { num: "100%", label: "Algodón pesado" },
+    { num: "5", label: "Días para cambios" },
+    { num: <>∞</>, label: "Estilo sin fecha de vencimiento" },
+    { num: "100%", label: "Prendas revisadas" },
   ];
   return (
     <div className="section-body" style={{ paddingBottom: 120 }}>

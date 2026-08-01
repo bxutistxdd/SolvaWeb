@@ -1,4 +1,4 @@
-/* Solva · guía de cuidado de la joya (contenido estático en 6 pasos). */
+/* Solva · guía de cuidado de la prenda (contenido estático en 6 pasos). */
 
 import { Reveal } from "../components/primitives.jsx";
 import { BRAND } from "../lib/brand.js";
@@ -7,33 +7,33 @@ export function Care() {
   const steps = [
     {
       n: "01",
-      title: "Guarda separada",
-      body: "Cada pieza en su bolsa de tela o estuche. El roce entre joyas es la primera causa de microrayas en la plata.",
+      title: "Lava al revés",
+      body: "Voltea la prenda antes de lavar para proteger el estampado. El roce con otras prendas es la primera causa de que se desgaste.",
     },
     {
       n: "02",
-      title: "Última en ponerse, primera en quitarse",
-      body: "Aplica perfume, crema y maquillaje antes de vestir la pieza. Quítala antes de dormir, nadar o entrenar.",
+      title: "Agua fría, ciclo suave",
+      body: "El agua caliente encoge la tela y desgasta el color más rápido. Separa las prendas oscuras de las claras.",
     },
     {
       n: "03",
-      title: "Limpieza semanal suave",
-      body: "Paño de microfibra seco y movimientos circulares. Para sulfuros visibles: agua tibia, jabón neutro y secado inmediato.",
+      title: "Evita la secadora",
+      body: "Seca a la sombra y en plano si es posible. El calor de la secadora es la causa número uno de que una prenda se deforme.",
     },
     {
       n: "04",
-      title: "Oro laminado: trato extra",
-      body: "Evita contacto directo con químicos. No uses pasta de dientes ni productos abrasivos: el laminado es delgado y se desgasta.",
+      title: "Estampados: trato extra",
+      body: "No planches directo sobre el estampado. Plancha del lado interior o con un paño de por medio, a temperatura media.",
     },
     {
       n: "05",
-      title: "Limpieza profesional anual",
-      body: `Tu pieza de ${BRAND.name} tiene una limpieza profunda gratuita al año. Escríbenos por WhatsApp para coordinar.`,
+      title: "¿Dudas con una talla o pedido?",
+      body: `Escríbenos por WhatsApp a ${BRAND.name} y te ayudamos a coordinar un cambio o resolver cualquier duda.`,
     },
     {
       n: "06",
-      title: "Si pierde brillo",
-      body: "Es normal: la plata se oxida con el aire. Una pulida con paño especializado (incluido en tu pedido) la devuelve a fábrica.",
+      title: "Guarda bien",
+      body: "Dobla en vez de colgar las prendas de punto grueso (como sudaderas) para que no pierdan la forma en el hombro.",
     },
   ];
   return (
@@ -44,15 +44,16 @@ export function Care() {
         </Reveal>
         <Reveal delay={100}>
           <h1 className="h-1">
-            Cuidar la pieza
+            Cuidar la prenda
             <br />
-            <em>es prolongar la historia.</em>
+            <em>es que dure más.</em>
           </h1>
         </Reveal>
         <Reveal delay={300}>
           <p className="body-lg" style={{ maxWidth: "60ch" }}>
-            Una joya bien tratada conserva su acabado durante décadas. Estos seis pasos cubren el
-            95% de lo que necesitas saber para mantener tu pieza de {BRAND.name} como el día uno.
+            Una prenda bien tratada conserva su color y su forma por mucho más tiempo. Estos seis
+            pasos cubren el 95% de lo que necesitas saber para mantener tu ropa de {BRAND.name}{" "}
+            como el día uno.
           </p>
         </Reveal>
       </section>

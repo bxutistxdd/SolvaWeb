@@ -9,7 +9,7 @@ import { visibleProducts } from "../lib/catalog.js";
 import { searchProducts } from "../lib/search.js";
 import { PHShape } from "../components/primitives.jsx";
 
-const SEARCH_HINTS = ["Anillo plata 925", "Collar fino", "Arete argolla", "Piercing acero"];
+const SEARCH_HINTS = ["Camiseta estampada", "Zapatillas", "Sudadera", "Talla M"];
 
 export function SearchOverlay({ open, onClose, onNavigate }) {
   const [q, setQ] = useState("");
@@ -80,7 +80,7 @@ export function SearchOverlay({ open, onClose, onNavigate }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && goFull()}
-            placeholder="Busca por nombre, material, categoría…"
+            placeholder="Busca por nombre, color, categoría…"
             aria-label="Buscar productos"
           />
           {q && (
@@ -132,7 +132,7 @@ export function SearchOverlay({ open, onClose, onNavigate }) {
                     const catLabel =
                       db.getCategoryLabel(p.cat) ||
                       VETA_DATA.categories.find((c) => c.id === p.cat)?.label;
-                    const shape = VETA_DATA.shapes[p.cat]?.kind || "ring";
+                    const shape = VETA_DATA.shapes[p.cat]?.kind || "generic";
                     const thumb = VETA_DATA.productImages(p)[0];
                     return (
                       <button
@@ -149,9 +149,7 @@ export function SearchOverlay({ open, onClose, onNavigate }) {
                         </div>
                         <div className="search-result-body">
                           <span className="search-result-name">{p.name}</span>
-                          <span className="search-result-meta">
-                            {p.material} · {catLabel}
-                          </span>
+                          <span className="search-result-meta">{catLabel}</span>
                         </div>
                         <span className="search-result-price">{VETA_DATA.fmtPrice(p.price)}</span>
                       </button>

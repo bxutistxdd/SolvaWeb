@@ -18,46 +18,28 @@ export function Footer({ onNavigate }) {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              onNavigate({ name: "catalog", filter: "anillos" });
+              onNavigate({ name: "catalog", filter: "camisetas" });
             }}
           >
-            Anillos
+            Camisetas
           </a>
           <a
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              onNavigate({ name: "catalog", filter: "collares" });
+              onNavigate({ name: "catalog", filter: "zapatilla" });
             }}
           >
-            Collares
+            Zapatillas
           </a>
           <a
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              onNavigate({ name: "catalog", filter: "aretes" });
+              onNavigate({ name: "catalog" });
             }}
           >
-            Aretes
-          </a>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate({ name: "catalog", filter: "pulseras" });
-            }}
-          >
-            Pulseras
-          </a>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate({ name: "catalog", filter: "piercings" });
-            }}
-          >
-            Piercings
+            Ver todo
           </a>
         </div>
         <div className="footer-col">
@@ -69,7 +51,7 @@ export function Footer({ onNavigate }) {
               onNavigate({ name: "care" });
             }}
           >
-            Cuidado de la joya
+            Cuidado de la prenda
           </a>
           <a
             href="#"

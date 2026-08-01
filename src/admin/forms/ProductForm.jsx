@@ -393,10 +393,7 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
       cat: p?.cat || (catList0[0] && catList0[0].id) || "",
       subcat: p?.subcat || "",
       ref: p?.ref || "",
-      material: p?.material || VETA_DATA.materials[0],
-      matMode: p?.material && !VETA_DATA.materials.includes(p.material) ? "custom" : "preset",
-      finish: p?.finish || VETA_DATA.finishes[0],
-      finMode: p?.finish && !VETA_DATA.finishes.includes(p.finish) ? "custom" : "preset",
+      material: p?.material || "",
       price: p?.price || "",
       sizesStr: (p?.sizes || []).join(", "),
       blurb: p?.blurb || "",
@@ -499,8 +496,7 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
       cat: form.cat,
       subcat: form.subcat || null,
       ref: form.ref || null,
-      material: form.material,
-      finish: form.finish,
+      material: form.material.trim(),
       price: parseInt(form.price, 10),
       sizes,
       blurb: form.blurb.trim(),
@@ -546,7 +542,7 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
                 className={`adm-input${errors.name ? " adm-input--err" : ""}`}
                 value={form.name}
                 onChange={(e) => set("name", e.target.value)}
-                placeholder="Ej: Anillo Vena"
+                placeholder="Ej: Camiseta Estampado Arcángel"
                 name="product-name"
                 autoComplete="off"
               />
@@ -654,69 +650,15 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
             </div>
 
             <div className="adm-form-field">
-              <label className="adm-lbl">Material</label>
-              <select
+              <label className="adm-lbl">
+                Composición <span className="adm-field-hint-inline">— opcional</span>
+              </label>
+              <input
                 className="adm-input"
-                value={form.matMode === "custom" ? "__custom__" : form.material}
-                onChange={(e) => {
-                  if (e.target.value === "__custom__") {
-                    set("matMode", "custom");
-                    set("material", "");
-                  } else {
-                    set("matMode", "preset");
-                    set("material", e.target.value);
-                  }
-                }}
-              >
-                {VETA_DATA.materials.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-                <option value="__custom__">Otro…</option>
-              </select>
-              {form.matMode === "custom" && (
-                <input
-                  className="adm-input adm-input--sm"
-                  style={{ marginTop: 6 }}
-                  placeholder="Ej: Titanio, Cobre, …"
-                  value={form.material}
-                  onChange={(e) => set("material", e.target.value)}
-                />
-              )}
-            </div>
-
-            <div className="adm-form-field">
-              <label className="adm-lbl">Acabado</label>
-              <select
-                className="adm-input"
-                value={form.finMode === "custom" ? "__custom__" : form.finish}
-                onChange={(e) => {
-                  if (e.target.value === "__custom__") {
-                    set("finMode", "custom");
-                    set("finish", "");
-                  } else {
-                    set("finMode", "preset");
-                    set("finish", e.target.value);
-                  }
-                }}
-              >
-                {VETA_DATA.finishes.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
-                  </option>
-                ))}
-                <option value="__custom__">Otro…</option>
-              </select>
-              {form.finMode === "custom" && (
-                <input
-                  className="adm-input adm-input--sm"
-                  style={{ marginTop: 6 }}
-                  placeholder="Ej: Envejecido, Oxidado, …"
-                  value={form.finish}
-                  onChange={(e) => set("finish", e.target.value)}
-                />
-              )}
+                placeholder="Ej: Algodón 100%, Poliéster, Cuero sintético…"
+                value={form.material}
+                onChange={(e) => set("material", e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -732,7 +674,7 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
               className="adm-input"
               value={form.blurb}
               onChange={(e) => set("blurb", e.target.value)}
-              placeholder="Ej: Una línea sobre la piel, fina y precisa."
+              placeholder="Ej: Oversize, algodón pesado, estampado a pecho completo."
             />
           </div>
           <div className="adm-form-field" style={{ marginTop: 10 }}>
@@ -742,14 +684,14 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
               rows={4}
               value={form.desc}
               onChange={(e) => set("desc", e.target.value)}
-              placeholder="Descripción detallada: materiales, proceso, detalles de fabricación…"
+              placeholder="Descripción detallada: tela, corte, detalles de fabricación…"
             />
           </div>
         </div>
 
         {/* ── Tallas ── */}
         <div className="adm-form-card">
-          <h3 className="adm-form-card-h">Tallas / Largos</h3>
+          <h3 className="adm-form-card-h">Tallas</h3>
           <div className="adm-form-field">
             <label className="adm-lbl">
               Tallas disponibles <span className="adm-required">*</span>
@@ -758,7 +700,7 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
               className={`adm-input${errors.sizes ? " adm-input--err" : ""}`}
               value={form.sizesStr}
               onChange={(e) => set("sizesStr", e.target.value)}
-              placeholder="5, 6, 7, 8, 9  —  40cm, 45cm, 50cm  —  S, M, L  —  único"
+              placeholder="S, M, L, XL  —  38, 39, 40, 41  —  único"
             />
             <span className="adm-field-hint">Separar por comas</span>
             {errors.sizes && <span className="adm-field-err">{errors.sizes}</span>}

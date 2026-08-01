@@ -134,7 +134,7 @@ export function TabProductos({
               <th>Img.</th>
               <th>Nombre</th>
               <th>Cat.</th>
-              <th>Material</th>
+              <th>Colores</th>
               <th>Precio</th>
               <th>Tallas</th>
               <th>Estado</th>
@@ -150,7 +150,7 @@ export function TabProductos({
                     {VETA_DATA.productImages(p)[0] ? (
                       <img src={VETA_DATA.productImages(p)[0]} alt={p.name} />
                     ) : (
-                      <PHShape kind={VETA_DATA.shapes[p.cat]?.kind || "ring"} />
+                      <PHShape kind={VETA_DATA.shapes[p.cat]?.kind || "generic"} />
                     )}
                   </div>
                 </td>
@@ -159,7 +159,9 @@ export function TabProductos({
                   <code className="adm-code">{p.id}</code>
                 </td>
                 <td style={{ textTransform: "capitalize", color: "var(--ink-soft)" }}>{p.cat}</td>
-                <td style={{ color: "var(--ink-soft)" }}>{p.material}</td>
+                <td style={{ color: "var(--ink-soft)" }}>
+                  {VETA_DATA.productColors(p).length || "—"}
+                </td>
                 <td>{VETA_DATA.fmtPrice(p.price)}</td>
                 <td className="adm-sizes-cell">{p.sizes.join(" · ")}</td>
                 <td>

@@ -48,7 +48,6 @@ export function searchProducts(query, products) {
     const raw = [
       p.name,
       p.material,
-      p.finish,
       p.cat,
       lbl(p.cat),
       lbl(p.subcat),
@@ -56,6 +55,7 @@ export function searchProducts(query, products) {
       p.blurb,
       p.desc,
       p.id,
+      ...VETA_DATA.productColors(p).map((c) => c.name),
     ]
       .map(norm)
       .join(" ");
