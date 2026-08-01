@@ -21,16 +21,7 @@ function Wordmark({ onClick }) {
   );
 }
 
-export function Nav({
-  route,
-  onNavigate,
-  cartCount,
-  cartBump,
-  onCartOpen,
-  theme,
-  onThemeToggle,
-  onSearchOpen,
-}) {
+export function Nav({ route, onNavigate, cartCount, cartBump, onCartOpen, onSearchOpen }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -103,42 +94,6 @@ export function Nav({
           ))}
         </div>
         <div className="nav-right">
-          <button
-            className="theme-toggle"
-            data-theme={theme}
-            onClick={onThemeToggle}
-            aria-label={theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            title={theme === "dark" ? "Modo claro" : "Modo oscuro"}
-          >
-            <span className="theme-toggle-icon" aria-hidden="true">
-              <svg
-                className="sun"
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              >
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4" />
-              </svg>
-              <svg
-                className="moon"
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />
-              </svg>
-            </span>
-          </button>
           <button className="nav-search-btn" onClick={onSearchOpen} aria-label="Buscar">
             <svg
               viewBox="0 0 24 24"

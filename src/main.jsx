@@ -135,34 +135,6 @@ function App() {
         cartBump={cartBump}
         onCartOpen={() => setCartOpen(true)}
         onSearchOpen={() => setSearchOpen(true)}
-        theme={t.theme}
-        onThemeToggle={() => {
-          const next = t.theme === "dark" ? "light" : "dark";
-          const canAnimate =
-            typeof document.startViewTransition === "function" &&
-            !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          if (canAnimate) {
-            // Aplica la paleta de forma imperativa dentro de la transición para
-            // que la captura "after" no dependa del ciclo de render de React —
-            // el crossfade lo compone el navegador (GPU), no se recalcula el
-            // estilo de cada elemento en cada frame como con la transición CSS
-            // de custom properties que usábamos antes. Envuelto en try/catch
-            // porque el navegador puede abortar la transición (ej. clics muy
-            // seguidos) — el cambio de tema ya se aplicó igual, solo se pierde
-            // el crossfade en ese caso puntual.
-            try {
-              const transition = document.startViewTransition(() => {
-                applyPalette(t.palette, next);
-                setTweak("theme", next);
-              });
-              transition.finished.catch(() => {});
-            } catch {
-              setTweak("theme", next);
-            }
-          } else {
-            setTweak("theme", next);
-          }
-        }}
       />
 
       {route.name === "home" && <Home onNavigate={navigate} onAdd={handleAdd} />}

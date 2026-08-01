@@ -10,42 +10,42 @@
 @property --bg {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ebe5dc;
+  initial-value: #170f2b;
 }
 @property --bg-elev {
   syntax: "<color>";
   inherits: true;
-  initial-value: #f3eee6;
+  initial-value: #201640;
 }
 @property --bg-soft {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ded5c7;
+  initial-value: #2a1d4d;
 }
 @property --ink {
   syntax: "<color>";
   inherits: true;
-  initial-value: #2b231b;
+  initial-value: #f5f2fa;
 }
 @property --ink-soft {
   syntax: "<color>";
   inherits: true;
-  initial-value: #6b5a48;
+  initial-value: #b6acc9;
 }
 @property --ink-faint {
   syntax: "<color>";
   inherits: true;
-  initial-value: #a08866;
+  initial-value: #7d7296;
 }
 @property --accent {
   syntax: "<color>";
   inherits: true;
-  initial-value: #a08866;
+  initial-value: #f4633a;
 }
 @property --accent-2 {
   syntax: "<color>";
   inherits: true;
-  initial-value: #c9b896;
+  initial-value: #ff8a5c;
 }
 
 /* El cambio de tema claro/oscuro ya NO se anima transicionando estas
@@ -57,20 +57,22 @@
    más abajo. Los @property de arriba se conservan porque tipan el valor
    como <color> (necesario para color-mix()), no por la transición. */
 :root {
-  /* ── Paleta clara · mediterránea cálida ── */
-  --bg: #ebe5dc;
-  --bg-elev: #f3eee6;
-  --bg-soft: #ded5c7;
-  --ink: #2b231b;
-  --ink-soft: #6b5a48;
-  --ink-faint: #a08866;
-  --line: rgba(43, 35, 27, 0.1);
-  --line-soft: rgba(43, 35, 27, 0.05);
-  --accent: #a08866;
-  --accent-2: #c9b896;
+  /* ── Paleta VOGA · violeta oscuro + coral (identidad fija, sin toggle) ── */
+  --bg: #170f2b;
+  --bg-elev: #201640;
+  --bg-soft: #2a1d4d;
+  --ink: #f5f2fa;
+  --ink-soft: #b6acc9;
+  --ink-faint: #7d7296;
+  --line: rgba(245, 242, 250, 0.1);
+  --line-soft: rgba(245, 242, 250, 0.05);
+  --accent: #f4633a;
+  --accent-2: #ff8a5c;
 
-  /* ── Tipografía ── */
-  --serif: "Cormorant Garamond", "Cormorant", Georgia, serif;
+  /* ── Tipografía ──
+     --serif se conserva por compatibilidad (23 usos en headings) pero ya
+     no apunta a una fuente serif: VOGA pide headings sans-serif bold. */
+  --serif: "Manrope", ui-sans-serif, -apple-system, system-ui, sans-serif;
   --sans: "Manrope", ui-sans-serif, -apple-system, system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
 
@@ -103,18 +105,9 @@
   }
 }
 
-[data-theme="dark"] {
-  --bg: #14110d;
-  --bg-elev: #1c1814;
-  --bg-soft: #221d18;
-  --ink: #ebe5dc;
-  --ink-soft: #a89884;
-  --ink-faint: #6b5a48;
-  --line: rgba(235, 229, 220, 0.08);
-  --line-soft: rgba(235, 229, 220, 0.04);
-  --accent: #c9a978;
-  --accent-2: #8a7253;
-}
+/* VOGA es una identidad fija (sin modo claro/oscuro alternable): el
+   selector [data-theme="dark"] se conserva vacío por si queda algún
+   toggle residual en el DOM, pero ya no cambia la paleta. */
 
 /* ── Reset mínimo ── */
 *,
@@ -180,32 +173,32 @@ img {
 
 .h-display {
   font-family: var(--serif);
-  font-weight: 300;
+  font-weight: 800;
   font-size: clamp(44px, 7vw, 128px);
   line-height: 0.92;
   letter-spacing: -0.02em;
 }
 .h-display em {
-  font-style: italic;
-  font-weight: 300;
-  color: var(--ink-soft);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--accent);
 }
 
 .h-1 {
   font-family: var(--serif);
-  font-weight: 300;
+  font-weight: 800;
   font-size: clamp(40px, 6vw, 92px);
   line-height: 1;
   letter-spacing: -0.015em;
 }
 .h-1 em {
-  font-style: italic;
-  color: var(--ink-soft);
+  font-style: normal;
+  color: var(--accent);
 }
 
 .h-2 {
   font-family: var(--serif);
-  font-weight: 300;
+  font-weight: 800;
   font-size: clamp(28px, 3.6vw, 52px);
   line-height: 1.05;
   letter-spacing: -0.01em;
@@ -213,7 +206,7 @@ img {
 
 .h-3 {
   font-family: var(--serif);
-  font-weight: 400;
+  font-weight: 700;
   font-size: clamp(20px, 2.2vw, 28px);
   line-height: 1.1;
 }
@@ -247,7 +240,7 @@ img {
 /* ── Wordmark ── */
 .wordmark {
   font-family: var(--serif);
-  font-weight: 400;
+  font-weight: 800;
   letter-spacing: 0.38em;
   font-size: 18px;
   text-indent: 0.38em;
