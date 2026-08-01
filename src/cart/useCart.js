@@ -23,7 +23,7 @@ export function useCart() {
 
   const add = useCallback((product, opts) => {
     setItems((prev) => {
-      const key = `${product.id}::${opts.size}::${opts.finish}`;
+      const key = `${product.id}::${opts.size}::${opts.finish}::${opts.color || ""}`;
       const idx = prev.findIndex((it) => it.key === key);
       const cur = idx >= 0 ? prev[idx].qty : 0;
       const req = opts.qty || 1;
@@ -47,8 +47,9 @@ export function useCart() {
           material: product.material,
           size: opts.size,
           finish: opts.finish,
+          color: opts.color || null,
           qty: newQty,
-          img: VETA_DATA.productImages(product)[0] || null,
+          img: opts.colorImg || VETA_DATA.productImages(product)[0] || null,
           shape: VETA_DATA.shapes[product.cat]?.kind || "ring",
         },
       ];

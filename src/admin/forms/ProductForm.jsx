@@ -15,6 +15,7 @@ import {
   compressImage,
   canvasToBlob,
   loadImg,
+  slugify,
 } from "../images.js";
 
 // ── Editor de recorte/encuadre 4:5 (estilo foto de perfil) ──
@@ -401,6 +402,8 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
       blurb: p?.blurb || "",
       desc: p?.desc || "",
       images: VETA_DATA.productImages(p), // array dinámico de URLs (0 = principal)
+      colors: VETA_DATA.productColors(p), // variantes de color: [{ id, name, images }]
+      hasColors: VETA_DATA.productColors(p).length > 0,
     }),
     []
   );
@@ -417,6 +420,34 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
       ...f,
       images: typeof updater === "function" ? updater(f.images) : updater,
     }));
+  }, []);
+
+  // Mismo patrón que setImages, pero apuntando a las imágenes de un color
+  // concreto (form.colors[i].images).
+  const setColorImages = useCallback((colorIdx, updater) => {
+    setFormRaw((f) => ({
+      ...f,
+      colors: f.colors.map((c, i) =>
+        i === colorIdx
+          ? { ...c, images: typeof updater === "function" ? updater(c.images) : updater }
+          : c
+      ),
+    }));
+  }, []);
+  const setColorName = useCallback((colorIdx, name) => {
+    setFormRaw((f) => ({
+      ...f,
+      colors: f.colors.map((c, i) => (i === colorIdx ? { ...c, name } : c)),
+    }));
+  }, []);
+  const addColor = useCallback(() => {
+    setFormRaw((f) => ({
+      ...f,
+      colors: [...f.colors, { id: `c${Date.now()}`, name: "", images: [] }],
+    }));
+  }, []);
+  const removeColor = useCallback((colorIdx) => {
+    setFormRaw((f) => ({ ...f, colors: f.colors.filter((_, i) => i !== colorIdx) }));
   }, []);
 
   // Re-render cuando las categorías cargan/cambian desde Supabase.
@@ -442,8 +473,15 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
     if (!form.name.trim()) e.name = "El nombre es obligatorio.";
     if (!form.price || Number(form.price) <= 0) e.price = "El precio debe ser mayor a 0.";
     if (!form.sizesStr.trim()) e.sizes = "Agrega al menos una talla.";
-    if (!form.images || form.images.length < MIN_IMAGES)
+    if (form.hasColors) {
+      if (!form.colors.length) e.colors = "Agrega al menos un color.";
+      else if (form.colors.some((c) => !c.name.trim()))
+        e.colors = "Cada color necesita un nombre.";
+      else if (form.colors.some((c) => c.images.length < MIN_IMAGES))
+        e.colors = `Cada color necesita al menos ${MIN_IMAGES} imágenes.`;
+    } else if (!form.images || form.images.length < MIN_IMAGES) {
       e.images = `Agrega al menos ${MIN_IMAGES} imágenes.`;
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -467,7 +505,14 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
       sizes,
       blurb: form.blurb.trim(),
       desc: form.desc.trim(),
-      images: form.images,
+      images: form.hasColors ? [] : form.images,
+      colors: form.hasColors
+        ? form.colors.map((c) => ({
+            id: c.id || slugify(c.name) || undefined,
+            name: c.name.trim(),
+            images: c.images,
+          }))
+        : [],
     });
   };
 
@@ -732,19 +777,86 @@ export function ProductForm({ product, allProducts, onSave, onBack }) {
         {/* ── Imágenes ── */}
         <div className="adm-form-card">
           <h3 className="adm-form-card-h">Imágenes</h3>
-          <p className="adm-hint" style={{ marginBottom: 14 }}>
-            Arrastra las fotos desde tu computador. Se comprimen automáticamente sin perder calidad
-            y se suben a la nube. Reordénalas para elegir cuál va primero y usa{" "}
-            <strong>Editar</strong>
-            para recortar cada una al marco vertical.
-          </p>
-          <ImageManager
-            images={form.images}
-            setImages={setImages}
-            productId={id}
-            sessionUrls={sessionUrls}
-          />
-          {errors.images && <span className="adm-field-err">{errors.images}</span>}
+
+          <label
+            className="adm-lbl"
+            style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}
+          >
+            <input
+              type="checkbox"
+              checked={form.hasColors}
+              onChange={(e) => set("hasColors", e.target.checked)}
+            />
+            Este producto tiene variantes de color (ej: la misma prenda en varios colores)
+          </label>
+
+          {!form.hasColors ? (
+            <>
+              <p className="adm-hint" style={{ marginBottom: 14 }}>
+                Arrastra las fotos desde tu computador. Se comprimen automáticamente sin perder
+                calidad y se suben a la nube. Reordénalas para elegir cuál va primero y usa{" "}
+                <strong>Editar</strong>
+                para recortar cada una al marco vertical.
+              </p>
+              <ImageManager
+                images={form.images}
+                setImages={setImages}
+                productId={id}
+                sessionUrls={sessionUrls}
+              />
+              {errors.images && <span className="adm-field-err">{errors.images}</span>}
+            </>
+          ) : (
+            <>
+              <p className="adm-hint" style={{ marginBottom: 14 }}>
+                Agrega un color por cada variante y sube sus fotos. En la ficha del producto el
+                cliente elige el color y la foto principal cambia a esa variante.
+              </p>
+              {form.colors.map((c, i) => (
+                <div
+                  key={c.id || i}
+                  className="adm-form-card"
+                  style={{ marginBottom: 16, background: "var(--surface-2, transparent)" }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      marginBottom: 10,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <input
+                      className="adm-input"
+                      placeholder="Nombre del color, ej: Negro"
+                      value={c.name}
+                      onChange={(e) => setColorName(i, e.target.value)}
+                      style={{ maxWidth: 240 }}
+                    />
+                    <button
+                      type="button"
+                      className="adm-mini-btn adm-mini-btn--del"
+                      onClick={() => removeColor(i)}
+                      aria-label={`Quitar color ${c.name || i + 1}`}
+                    >
+                      ✕ Quitar color
+                    </button>
+                  </div>
+                  <ImageManager
+                    images={c.images}
+                    setImages={(updater) => setColorImages(i, updater)}
+                    productId={`${id}-${c.id || i}`}
+                    sessionUrls={sessionUrls}
+                  />
+                </div>
+              ))}
+              <button type="button" className="adm-btn adm-btn--ghost" onClick={addColor}>
+                + Agregar color
+              </button>
+              {errors.colors && <span className="adm-field-err">{errors.colors}</span>}
+            </>
+          )}
         </div>
 
         {/* ── Acciones ── */}

@@ -9,7 +9,12 @@ import { searchProducts } from "../lib/search.js";
 import { ProductCard } from "../components/ProductCard.jsx";
 
 export function Catalog({ filter, search, onNavigate }) {
-  const all = useMemo(() => visibleProducts(), []);
+  // Re-render cuando el catálogo de Supabase carga o cambia (realtime), para
+  // no quedarse pegado en el seed estático si Catalog montó antes de que
+  // db.init() resolviera.
+  const [, forceTick] = useState(0);
+  useEffect(() => db.subscribe(() => forceTick((n) => n + 1)), []);
+  const all = useMemo(() => visibleProducts(), [db.getProducts()]);
   const [cat, setCat] = useState(filter || "all");
   const [subcat, setSubcat] = useState("all");
   const [mat, setMat] = useState("all");

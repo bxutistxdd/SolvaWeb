@@ -282,17 +282,47 @@ export const fmtPrice = (n) =>
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
+// Normaliza product.colors a un array de variantes { id, name, images }.
+// Cada variante es un color/estampado distinto del mismo producto (ej: una
+// sudadera en negro, gris y azul), con su propia galería de fotos. Un
+// producto sin variantes (ej: joyería) simplemente no trae `colors`.
+export const productColors = (p) => {
+  if (!p || !Array.isArray(p.colors)) return [];
+  return p.colors
+    .filter((c) => c && typeof c === "object")
+    .map((c) => ({
+      id: c.id || c.name,
+      name: c.name || c.id || "",
+      images: Array.isArray(c.images) ? c.images.filter(Boolean) : [],
+    }))
+    .filter((c) => c.images.length > 0);
+};
+
 // Normaliza product.images a un array ordenado de URLs, soportando tanto el
 // formato nuevo (array dinámico de 3-10) como el legacy ({main,profile,detail,context}).
 // El índice 0 es la imagen principal (catálogo / carrito / búsqueda).
+// Si el producto tiene variantes de color, se usa la galería del primer
+// color como imagen/galería por defecto (antes de que el cliente elija).
 export const productImages = (p) => {
   if (!p) return [];
+  const colors = productColors(p);
+  if (colors.length) return colors[0].images;
   const im = p.images;
   if (Array.isArray(im)) return im.filter(Boolean);
   if (im && typeof im === "object") {
     return [im.main, im.profile, im.detail, im.context].filter(Boolean);
   }
   return [];
+};
+
+// Todas las URLs de imagen que "pertenecen" a un producto (galería base +
+// la de cada variante de color), sin duplicados. Lo usa la capa de datos
+// para saber qué archivos borrar de Storage al editar/eliminar un producto.
+export const allProductImages = (p) => {
+  if (!p) return [];
+  const flat = Array.isArray(p.images) ? p.images.filter(Boolean) : [];
+  const fromColors = productColors(p).flatMap((c) => c.images);
+  return Array.from(new Set([...flat, ...fromColors]));
 };
 
 // Objeto agregado — se mantiene la forma `VETA_DATA.*` que ya usaba el resto
@@ -305,4 +335,6 @@ export const VETA_DATA = {
   shapes,
   fmtPrice,
   productImages,
+  productColors,
+  allProductImages,
 };

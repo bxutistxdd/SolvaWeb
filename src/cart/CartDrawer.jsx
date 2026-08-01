@@ -32,10 +32,10 @@ export function CartDrawer({ open, onClose, cart, waPhone }) {
 
   const toWhatsApp = () => {
     if (cart.items.length === 0) return;
-    const lines = cart.items.map(
-      (it) =>
-        `• ${it.name} (${it.material}, ${it.finish}, talla ${it.size}) x${it.qty} — ${VETA_DATA.fmtPrice(it.price * it.qty)} COP`
-    );
+    const lines = cart.items.map((it) => {
+      const attrs = [it.material, it.finish, it.color, `talla ${it.size}`].filter(Boolean);
+      return `• ${it.name} (${attrs.join(", ")}) x${it.qty} — ${VETA_DATA.fmtPrice(it.price * it.qty)} COP`;
+    });
     const msg = [
       "¡Hola! Vi estos productos en su catálogo y me interesan:",
       "",
@@ -122,7 +122,9 @@ export function CartDrawer({ open, onClose, cart, waPhone }) {
                   <div>
                     <h4>{it.name}</h4>
                     <div className="vmeta">
-                      {it.material} · {it.finish} · Talla {it.size}
+                      {[it.material, it.finish, it.color, `Talla ${it.size}`]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </div>
                     {st.status === "low" && (
                       <span className="cart-stock-badge cart-stock-badge--low">

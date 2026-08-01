@@ -58,6 +58,7 @@ export const db = (function () {
       blurb: row.blurb || "",
       desc: row.description || "",
       images: row.images || {},
+      colors: row.colors || [],
       visible: row.visible,
       featured: row.featured,
     };
@@ -213,6 +214,14 @@ export const db = (function () {
     return p ? p.visible === false : false;
   }
 
+  // true una vez que el catálogo real de Supabase ya cargó. Antes de eso,
+  // getProducts() devuelve el seed estático como respaldo temporal — las
+  // pantallas que muestran UN producto puntual (PDP) deben esperar a esto
+  // en vez de arriesgarse a mostrar el seed por error de ID.
+  function isReady() {
+    return _ready;
+  }
+
   function onReady(fn) {
     if (_ready) {
       fn();
@@ -312,15 +321,17 @@ export const db = (function () {
       blurb: product.blurb || "",
       description: product.desc || "",
       images: Array.isArray(product.images) ? product.images : product.images || {},
+      colors: Array.isArray(product.colors) ? product.colors : [],
       visible: product.visible !== false,
       featured: product.featured || false,
     };
     const { error } = await sb.from("products").upsert(row, { onConflict: "id" });
     if (error) throw error;
-    // Borrar de Storage las imágenes que el admin quitó o reemplazó.
+    // Borrar de Storage las imágenes que el admin quitó o reemplazó (galería
+    // base + la de cada variante de color).
     if (prev) {
-      const oldUrls = VETA_DATA.productImages(prev);
-      const newUrls = VETA_DATA.productImages(product);
+      const oldUrls = VETA_DATA.allProductImages(prev);
+      const newUrls = VETA_DATA.allProductImages(product);
       const removed = oldUrls.filter((u) => !newUrls.includes(u));
       for (const u of removed) await deleteStorageImage(u);
     }
@@ -333,7 +344,7 @@ export const db = (function () {
     const { error } = await sb.from("products").delete().eq("id", id);
     if (error) throw error;
     if (prev) {
-      for (const u of VETA_DATA.productImages(prev)) await deleteStorageImage(u);
+      for (const u of VETA_DATA.allProductImages(prev)) await deleteStorageImage(u);
     }
     if (_products) {
       _products = _products.filter((p) => p.id !== id);
@@ -473,6 +484,7 @@ export const db = (function () {
 
   return {
     init,
+    isReady,
     onReady,
     subscribe,
     getProducts,

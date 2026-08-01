@@ -11,12 +11,33 @@ import { Reveal, Magnetic, Placeholder } from "../components/primitives.jsx";
 import { ProductCard } from "../components/ProductCard.jsx";
 
 export function PDP({ id, onNavigate, onAdd }) {
+  // Re-render cuando el catálogo real de Supabase termina de cargar o
+  // cambia — si no, esta pantalla puede quedarse mostrando el producto
+  // semilla (joyería) mientras la carga real está en curso.
+  const [, forceTick] = useState(0);
+  useEffect(() => db.subscribe(() => forceTick((n) => n + 1)), []);
+
+  const ready = db.isReady();
   const allProducts = db.getProducts();
-  const product = allProducts.find((p) => p.id === id) || allProducts[0];
+  const found = allProducts.find((p) => p.id === id);
+  const product = found || allProducts[0];
   const shape = VETA_DATA.shapes[product.cat]?.kind || "ring";
 
+  // Variantes de color (si el producto las tiene): cada una trae su propia
+  // galería de fotos. colorIdx decide cuál se muestra.
+  const colors = useMemo(() => VETA_DATA.productColors(product), [product]);
+  const [colorIdx, setColorIdx] = useState(0);
+  useEffect(() => {
+    setColorIdx(0);
+  }, [id]);
+  const safeColorIdx = Math.min(colorIdx, Math.max(0, colors.length - 1));
+
   // Galería dinámica: tantas vistas como imágenes tenga el producto (3-10).
-  const imgs = useMemo(() => VETA_DATA.productImages(product), [product]);
+  // Si hay variantes de color, la galería es la del color elegido.
+  const imgs = useMemo(
+    () => (colors.length ? colors[safeColorIdx].images : VETA_DATA.productImages(product)),
+    [product, colors, safeColorIdx]
+  );
 
   const [view, setView] = useState(0);
   const [size, setSize] = useState(
@@ -38,6 +59,12 @@ export function PDP({ id, onNavigate, onAdd }) {
     if (st.qty !== null && qty > st.qty) setQty(Math.max(1, st.qty));
   };
 
+  /* Al cambiar de color: cambia la galería mostrada y vuelve a la primera vista. */
+  const handleColorSelect = (i) => {
+    setColorIdx(i);
+    setView(0);
+  };
+
   const gallery = imgs.length ? imgs : [null]; // al menos un placeholder
   const safeView = Math.min(view, gallery.length - 1);
 
@@ -55,6 +82,30 @@ export function PDP({ id, onNavigate, onAdd }) {
   const related = visibleProducts()
     .filter((p) => p.cat === product.cat && p.id !== product.id)
     .slice(0, 4);
+
+  // Mientras el catálogo real de Supabase no ha cargado, no mostrar nada
+  // (evita el parpadeo con el seed de joyería mientras se resuelve el id).
+  if (!ready) {
+    return <main className="page-enter" style={{ minHeight: "60vh" }} />;
+  }
+
+  // Catálogo ya cargado y el id no corresponde a ningún producto real.
+  if (!found) {
+    return (
+      <main className="page-enter">
+        <div style={{ padding: "120px 24px", textAlign: "center" }}>
+          <p className="body">No encontramos esta pieza. Puede que ya no esté disponible.</p>
+          <button
+            className="btn btn--ghost"
+            style={{ marginTop: 16 }}
+            onClick={() => onNavigate({ name: "catalog" })}
+          >
+            Volver al catálogo
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="page-enter">
@@ -123,6 +174,28 @@ export function PDP({ id, onNavigate, onAdd }) {
           <Reveal delay={280}>
             <p className="pdp-desc">{product.desc}</p>
           </Reveal>
+
+          {colors.length > 0 && (
+            <Reveal delay={320}>
+              <div className="pdp-section">
+                <span className="pdp-section-label">Color: {colors[safeColorIdx].name}</span>
+                <div className="variant-row">
+                  {colors.map((c, i) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      className="variant-chip"
+                      data-on={safeColorIdx === i ? "1" : "0"}
+                      onClick={() => handleColorSelect(i)}
+                      aria-label={`Ver en color ${c.name}`}
+                    >
+                      {c.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          )}
 
           <Reveal delay={360}>
             <div className="pdp-section">
@@ -207,7 +280,16 @@ export function PDP({ id, onNavigate, onAdd }) {
                   className="btn"
                   style={{ width: "100%" }}
                   disabled={isOut}
-                  onClick={() => !isOut && onAdd(product, { size, finish, qty })}
+                  onClick={() =>
+                    !isOut &&
+                    onAdd(product, {
+                      size,
+                      finish,
+                      qty,
+                      color: colors.length ? colors[safeColorIdx].name : null,
+                      colorImg: colors.length ? colors[safeColorIdx].images[0] : null,
+                    })
+                  }
                 >
                   {isOut ? "Talla agotada" : "Agregar a la bolsa"}
                 </button>
