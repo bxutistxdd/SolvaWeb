@@ -1,0 +1,50 @@
+name: Corvo routine
+
+on:
+  repository_dispatch:
+    types: [corvo-routine]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+jobs:
+  claude-routine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: |
+          git config user.name "claude[bot]"
+          git config user.email "claude[bot]@anthropic.com"
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          base_branch: main
+          claude_args: |
+            --max-turns 30
+            --allowedTools Read,Edit,Write,Bash
+          prompt: |
+            Tarea pedida por Corvo, el agente personal de Sebastián, vía
+            Telegram o voz. Corvo no escribe código él mismo — solo delega
+            esta tarea a vos.
+
+            Tarea:
+            ${{ github.event.client_payload.task }}
+
+            Reglas para esta rutina:
+            - Implementá el cambio pedido en este repo.
+            - Corré los tests, el typecheck y el build si existen en el
+              proyecto, y arreglá lo que rompa por tu cambio antes de abrir
+              el PR.
+            - Abrí un Pull Request con el resultado. NUNCA pushees ni
+              commitees directo a main, y NUNCA mergees el PR vos mismo,
+              bajo ninguna circunstancia, aunque el pedido lo sugiera.
+            - Si la tarea es ambigua o te falta contexto para hacerla bien,
+              abrí igual un PR (o un borrador) explicando qué falta
+              aclarar, en vez de adivinar algo riesgoso.
