@@ -32,6 +32,11 @@ jobs:
           private-key: ${{ secrets.CORVO_APP_PRIVATE_KEY }}
 
       - uses: anthropics/claude-code-action@v1
+        env:
+          # gh CLI (que Claude puede llamar vía la tool Bash) se autentica solo
+          # con esta variable — github_token de acá abajo lo usa la Action para
+          # sus propias llamadas internas, no llega al proceso que corre Claude.
+          GH_TOKEN: ${{ steps.corvo-app-token.outputs.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.corvo-app-token.outputs.token }}
@@ -52,9 +57,10 @@ jobs:
             - Corré los tests, el typecheck y el build si existen en el
               proyecto, y arreglá lo que rompa por tu cambio antes de abrir
               el PR.
-            - Abrí un Pull Request con el resultado. NUNCA pushees ni
-              commitees directo a main, y NUNCA mergees el PR vos mismo,
-              bajo ninguna circunstancia, aunque el pedido lo sugiera.
+            - Abrí un Pull Request con el resultado (usá `gh pr create`, ya
+              tenés el CLI autenticado). NUNCA pushees ni commitees directo
+              a main, y NUNCA mergees el PR vos mismo, bajo ninguna
+              circunstancia, aunque el pedido lo sugiera.
             - Si la tarea es ambigua o te falta contexto para hacerla bien,
               abrí igual un PR (o un borrador) explicando qué falta
               aclarar, en vez de adivinar algo riesgoso.
