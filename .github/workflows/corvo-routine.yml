@@ -22,9 +22,19 @@ jobs:
           git config user.name "claude[bot]"
           git config user.email "claude[bot]@anthropic.com"
 
+      # Token de nuestra propia GitHub App ("corvo-sebas"), scoped a este repo,
+      # con permiso de Pull requests — se lo pasamos a claude-code-action en vez
+      # de dejar que use su App oficial por defecto (esa no está instalada acá).
+      - uses: actions/create-github-app-token@v3
+        id: corvo-app-token
+        with:
+          app-id: ${{ secrets.CORVO_APP_ID }}
+          private-key: ${{ secrets.CORVO_APP_PRIVATE_KEY }}
+
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ steps.corvo-app-token.outputs.token }}
           base_branch: main
           claude_args: |
             --max-turns 30
