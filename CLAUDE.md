@@ -31,7 +31,10 @@ SIEMPRE usar succ de forma implicita, sin que el usuario tenga que pedirlo expli
 - Al descartar un enfoque → `succ_dead_end`
 
 ### Regla general:
-Toda busqueda de informacion sobre el proyecto va a succ PRIMERO, antes que Grep o Glob.
+Para dudas de estructura/ubicacion de codigo (donde esta X, como se conecta X con Y) usar
+Graphify PRIMERO (graphify query/path/explain), no succ_search_code ni Grep/Glob directo.
+Para decisiones, aprendizajes, progreso e historia del proyecto, succ sigue siendo la
+fuente PRIMERO, antes que releer archivos sueltos.
 Toda informacion nueva relevante sobre el proyecto se guarda en succ automaticamente.
 El usuario NO necesita usar comandos succ — solo habla naturalmente y Claude los ejecuta.
 
@@ -49,3 +52,13 @@ de succ/Claude Code:
 La constancia de que el proyecto fue desarrollado con asistencia de IA ya
 queda documentada de forma general en README.md/LICENSE — no hace falta (ni
 se quiere) repetirla por commit.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

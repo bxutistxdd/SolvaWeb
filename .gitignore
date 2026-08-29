@@ -20,3 +20,7 @@ apply-chat-upgrades.js
 build-n8n-chat.js
 deploy-n8n-chat.js
 upgrade-flow.js
+
+# Graphify (grafo de conocimiento generado localmente)
+graphify-out/
+"Grafo de codigo.url"
