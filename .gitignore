@@ -24,3 +24,6 @@ upgrade-flow.js
 # Graphify (grafo de conocimiento generado localmente)
 graphify-out/
 "Grafo de codigo.url"
+
+# Contratos y cotizaciones — datos comerciales/de cliente, nunca a remoto público
+contratos/
